@@ -18,13 +18,18 @@ def handleString(str):
     return out
     pass
 
+#分割歌手
+def getSingers(singerString):
+	return re.split('，|,',singerString)
+	pass
+
+
 def handleSongDic(dic, handleDic):
-    singer = handleString(dic['singer'])
     name = handleString(dic['name'])
     keyword = handleString(dic['keyword'])
 
-    if singer != dic['singer'] or name != dic['name'] or keyword != dic['keyword']:
-        handleDic['singer'] = singer
+    if name != dic['name'] or keyword != dic['keyword']:
+    	handleDic['singers'] = dic['singers']
         handleDic['name'] = name
         handleDic['keyword'] = keyword
         return 1
@@ -51,10 +56,11 @@ def requestMusicList(offset):
 
 		musicList = []
 		for item in dic['song_list']:
-			tempDic = {'singer':item['author'],'name':item['title'],'keyword':item['author'] + item['title']}
+			singers = getSingers(item['author'])
+			tempDic = {'singers':singers,'name':item['title'],'keyword':item['author'] + ' ' + item['title']}
 			songDic = {'data':tempDic}
 
-			# print item['title']
+			# print item['author']
 			handleDic = {}
 
 			if handleSongDic(tempDic, handleDic):
@@ -71,7 +77,7 @@ def requestMusicList(offset):
 		print '----------'
 		raise e
 	pass
-
+	
 def getMusicList():
 	global offsetNum 
 	global fileName 
@@ -92,7 +98,8 @@ def getMusicList():
 	fileName = fileName + '热歌榜' 
 	print '结束,写入plist文件:' + fileName + '.plist'
 	#写入plist文件    
-	writePlist({'musicList':musicList}, fileName + '.plist')
+	path = '/home/pi/py/plists/'
+	writePlist({'musicList':musicList}, path + fileName + '.plist')
 	return fileName + '.plist'
 	pass
 

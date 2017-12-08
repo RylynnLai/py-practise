@@ -58,16 +58,16 @@ if len(sys.argv) >= 3:
 # 	return flag
 # 	pass
 
-def searchSong(singer, name, keyword):
+def searchSong(singers, name, keyword):
 	if len(keyword) == 0:
 		return 0
 		pass
 
-	lists = searchSongWithKeyword(singer)
+	lists = searchSongWithKeyword(keyword)
 	print '开始匹配...'
 	for song in lists:
-		title = song['FileName'].encode('utf-8')
-		if cmpKeyword(singer, name, title):
+		title = song['FileName']
+		if cmpKeyword(singers, name, title):
 			print '匹配成功'
 			return 1
 			break
@@ -76,8 +76,8 @@ def searchSong(singer, name, keyword):
 
 	lists = searchSongWithKeyword(name)
 	for song in lists:
-		title = song['FileName'].encode('utf-8')
-		if cmpKeyword(singer, name, title):
+		title = song['FileName']
+		if cmpKeyword(singers, name, title):
 			print '匹配成功'
 			return 1
 			break
@@ -114,10 +114,18 @@ def searchSongWithKeyword(keyword):
 
 #比较
 def cmpKeyword(oSinger, oName, fileName):
-	s1 = handleString(oSinger)
 	s2 = handleString(oName)
 	s3 = handleString(fileName)
-	return s1 in s3 and s2 in s3
+
+	s1 = 1
+	for s in oSinger:
+		if s not in fileName:
+			s1 = 0
+			break
+			pass
+		pass
+
+	return s1 and s2 in s3
 	pass
 
 #去除中英文特殊标点,空格,字母全转小写
